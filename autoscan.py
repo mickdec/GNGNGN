@@ -5,7 +5,7 @@ network = "192.168.242.0/24"
 def Scan_Network(network:str):
     process = subprocess.run("nmap -sn "+network,shell=True,stdout=subprocess.PIPE)
 
-    return process
+    return procses
 
 def Scan_ip_for_port(ip):
     process = subprocess.run("nmap -p- "+ip,shell=True,stdout=subprocess.PIPE)
