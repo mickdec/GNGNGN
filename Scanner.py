@@ -3,6 +3,8 @@ import argparse
 import netaddr
 import socket
 from colorama import Fore, Back, Style
+import time
+start = time.time()
 
 #Déclaration des arguments
 parser = argparse.ArgumentParser(description='Outils d\'énumeration rapide pour box/CTF.')
@@ -27,20 +29,20 @@ def scan(ip):
                         dataset = dataset[:-1]
                     if dataset[-1] == "\r":
                         dataset = dataset[:-1]
-
                     dataset_list = dataset.split("\r\n")
-
                     print(f'{Back.GREEN + str(port) + Style.RESET_ALL} is open.')
                     ishttp = 0
                     for data in dataset_list:
                         if "HTTP/1" in data:
                             ishttp = 1
                             print("HTTP Server - ",end="")
-                    if dataset == "":
-                        dataset = "EMPTY RESPONSE."
-                    print(dataset_undecoded)
-                        
+                    if "\\x" in str(dataset_undecoded):
+                        print(dataset_undecoded)
+                    else:
+                        print(dataset)
                 except:
                     continue
+
 scan("127.0.0.1")
+print("Durée du scan " + str(time.time() - start)[:-13])
 exit()
