@@ -9,7 +9,6 @@ def Scan_Network(network:str):
 
 def Scan_ip_for_port(ip):
     process = subprocess.run("nmap -p- "+ip,shell=True,stdout=subprocess.PIPE)
-    toto
     return process    
 
 def extract_Port(text_nmap):
