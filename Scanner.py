@@ -2,6 +2,7 @@ import subprocess,re
 import argparse
 import netaddr
 import socket
+from colorama import Fore, Back, Style
 
 #Déclaration des arguments
 parser = argparse.ArgumentParser(description='Outils d\'énumeration rapide pour box/CTF.')
@@ -12,8 +13,8 @@ network = "192.168.242.0/24"
 def scan(ip):
     output = subprocess.run("nmap -sn "+ip,shell=True,stdout=subprocess.PIPE).stdout.decode()
     output = re.findall(r'Nmap scan report for .*',output)
-    # ports = range(0,65535)
-    ports = [2000]
+    ports = range(0,65535)
+    # ports = [2000,8888]
 
     for elem in output:
         ip = elem.split(" ")[-1].replace("(","").replace(")","")
@@ -23,16 +24,28 @@ def scan(ip):
                     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     s.settimeout(1)
                     s.connect((ip, port))
-                    data = s.recv(1024)
-                    print(data)
-                    print(f'{str(port)} is open.')
+                    dataset = s.send(b"GET / HTTP/1.1\r\nHost:127.0.0.1\r\n\r\n")
+                    dataset = s.recv(1024).decode().replace("\r\n\r\n","\r\n")
+                    if dataset[-1] == "\n":
+                        dataset = dataset[:-1]
+                    if dataset[-1] == "\r":
+                        dataset = dataset[:-1]
+                        
+                    dataset_list = dataset.split("\r\n")
+
+                    print(f'{Back.GREEN + str(port) + Style.RESET_ALL} is open.')
+                    ishttp = 0
+                    for data in dataset_list:
+                        if "HTTP/1" in data:
+                            ishttp = 1
+                            print("HTTP Server - ",end="")
+                    print(dataset)
+                        
                 except:
                     # print(f"port {str(port)} closed.")
                     continue
-
-scan("172.16.5.0/24")
+scan("127.0.0.1")
 exit()
-
 
 def Scan_Network(network:str):
     process = subprocess.run("nmap -sn "+network,shell=True,stdout=subprocess.PIPE)
