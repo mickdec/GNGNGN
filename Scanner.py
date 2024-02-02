@@ -64,6 +64,6 @@ def scan(ip):
                     else:
                         print(dataset)
 
-scan("200.54.253.65")
+scan("127.0.0.7")
 print("Durée du scan " + str(time.time() - start)[:-13])
 exit()
